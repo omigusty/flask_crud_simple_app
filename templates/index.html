@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <section>
+        <div class="container">
+            <div class="mt-4">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNewData">Add new
+                    data</button>
+                <!-- Modal -->
+                <div class="modal fade" id="addNewData" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                    aria-labelledby="addNewDataLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="addNewDataLabel">Add new data</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ url_for('insertData') }}" method="post">
+                                    <div class="mb-3">
+                                        <label for="inputName" class="form-label">Name</label>
+                                        <input type="text" name="name" class="form-control" id="inputName" required
+                                            autocomplete="off">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="inputEmail" class="form-label">Email</label>
+                                        <input type="email" name="email" class="form-control" id="inputEmail" required
+                                            autocomplete="off">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="inputPhone" class="form-label">Phone</label>
+                                        <input type="text" name="phone" class="form-control" id="inputPhone" required
+                                            autocomplete="off">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Flash -->
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+                {{ message }}!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <!-- End Flash -->
+            <table class="table table-bordered align-middle justify-center mt-4">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <th scope="row">{{ employee.id }}</th>
+                        <td>{{ employee.name }}</td>
+                        <td>{{ employee.email }}</td>
+                        <td>{{ employee.phone }}</td>
+                        <td>
+                            <a href="/edit/{{ employee.id }}" type="button" class="btn btn-warning"
+                                data-bs-toggle="modal" data-bs-target="#editData{{ employee.id }}">Edit</a>
+                            <a href="/delete/{{ employee.id }}" type="button" onclick="return confirm('Are you sure?')"
+                                class="btn btn-danger">Delete</a>
+                        </td>
+                        <div class="modal fade" id="editData{{ employee.id }}" data-bs-backdrop="static"
+                            data-bs-keyboard="false" tabindex="-1" aria-labelledby="editDataLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="editDataLabel">Edit data</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ url_for('editData') }}" method="post">
+                                            <div class="mb-3">
+                                                <label for="editName" class="form-label">Name</label>
+                                                <input type="hidden" name="id" value="{{ employee.id }}">
+                                                <input type="text" name="name" class="form-control" id="editName"
+                                                    autocomplete="off" value="{{ employee.name }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editEmail" class="form-label">Email</label>
+                                                <input type="email" name="email" class="form-control" id="editEmail"
+                                                    autocomplete="off" value="{{ employee.email }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editPhone" class="form-label">Phone</label>
+                                                <input type="text" name="phone" class="form-control" id="editPhone"
+                                                    autocomplete="off" value="{{ employee.phone }}">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Save change</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+{% endblock %}
